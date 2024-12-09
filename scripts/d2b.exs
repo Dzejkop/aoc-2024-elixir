@@ -10,11 +10,12 @@ defmodule Report do
     increasing? = fb > fa
 
     Enum.all?(windows, fn {a, b} ->
-      monotony = if increasing? do
-        b > a
-      else
-        a > b
-      end
+      monotony =
+        if increasing? do
+          b > a
+        else
+          a > b
+        end
 
       diff = abs(a - b)
       safety = diff >= 1 and diff <= 3
@@ -25,6 +26,7 @@ defmodule Report do
 
   def variants(report) do
     l = length(report)
+
     for n <- 1..l do
       rem = l - n
       Enum.concat(Enum.slice(report, 0, n - 1), Enum.slice(report, n, rem))
@@ -46,10 +48,11 @@ lines =
   |> Enum.map(&String.trim/1)
   |> Enum.reject(&(&1 == ""))
 
-reports = for line <- lines do
-  vs = String.split(line, " ")
-  vs |> Enum.map(& String.to_integer(&1))
-end
+reports =
+  for line <- lines do
+    vs = String.split(line, " ")
+    vs |> Enum.map(&String.to_integer(&1))
+  end
 
 num_safe_reports = Enum.filter(reports, &Report.safe_with_dampener?/1) |> Enum.count()
 
