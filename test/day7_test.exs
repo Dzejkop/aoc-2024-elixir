@@ -3,12 +3,14 @@ defmodule Day7Test do
 
   test "parse line" do
     assert {190, [10, 19]} == Day7.parse_line("190: 10 19")
+
     assert {21037, [9, 7, 18, 13]} ==
              Day7.parse_line("21037: 9 7 18 13")
   end
 
   test "parse content" do
     assert [{190, [10, 19]}] == Day7.parse_input("190: 10 19")
+
     assert [{190, [10, 19]}, {21037, [9, 7, 18, 13]}] ==
              Day7.parse_input("190: 10 19\n21037: 9 7 18 13")
   end
