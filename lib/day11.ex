@@ -21,7 +21,7 @@ defmodule Day11 do
   end
 
   def num_digits(n) do
-    trunc(:math.ceil(:math.log10(n)))
+    trunc(:math.floor(:math.log10(n) + 1))
   end
 
   def even_digits?(1) do
