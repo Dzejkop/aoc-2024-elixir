@@ -27,8 +27,4 @@ defmodule Day11Test do
     assert 22 == how_many_stones_after([125, 17], 6)
     assert 55312 == how_many_stones_after([125, 17], 25)
   end
-
-  test "sanity check" do
-    dbg(step([8069, 87014, 98, 809_367, 525, 0, 9_494_914, 5]))
-  end
 end
