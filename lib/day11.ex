@@ -47,7 +47,6 @@ defmodule Day11 do
   end
 
   def how_many_stones_after(stones, num_blinks) do
-    dbg(stones)
     how_many_stones_after(step(stones), num_blinks - 1)
   end
 end
