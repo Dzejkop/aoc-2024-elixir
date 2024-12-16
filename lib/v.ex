@@ -10,4 +10,8 @@ defmodule V do
   def mul({x, y}, m) do
     {x * m, y * m}
   end
+
+  def vrem({x, y}, {w, h}) do
+    {rem(x, w), rem(y, h)}
+  end
 end
