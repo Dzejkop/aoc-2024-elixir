@@ -36,6 +36,22 @@ defmodule GridMap do
     end
   end
 
+  def set(map, {x, y}, v) do
+    {w, h} = GridMap.size(map)
+    arr = Map.get(map, :map)
+
+    new_arr =
+      cond do
+        x < 0 -> arr
+        y < 0 -> arr
+        x >= w -> arr
+        y >= h -> arr
+        true -> :array.set(y * w + x, v, arr)
+      end
+
+    Map.put(map, :map, new_arr)
+  end
+
   def find(map, pred) do
     {w, h} = size(map)
 
@@ -59,5 +75,27 @@ defmodule GridMap do
     ]
 
     dirs |> Enum.map(&{&1, at(map, &1)})
+  end
+
+  def swap(map, a, b) do
+    av = GridMap.at(map, a)
+    bv = GridMap.at(map, b)
+
+    map = GridMap.set(map, a, bv)
+
+    GridMap.set(map, b, av)
+  end
+
+  def to_string(map) do
+    {w, h} = GridMap.size(map)
+
+    for y <- 0..(h - 1) do
+      0..(w - 1) |> Enum.map(&GridMap.at(map, &1, y)) |> Enum.join()
+    end
+    |> Enum.join("\n")
+  end
+
+  def print(map) do
+    IO.puts(GridMap.to_string(map))
   end
 end
