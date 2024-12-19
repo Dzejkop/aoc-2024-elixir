@@ -52,9 +52,81 @@ defmodule Day16 do
     graph
   end
 
-  def eval_path(xs) do
-    [:s, x | xs] = xs
+  def part_one(f) do
+    content = File.read!(f)
+    map = GridMap.parse(content)
+    graph = map_to_graph(map)
 
+    best_path = Graph.dijkstra(graph, :s, :e)
+
+    eval_path(best_path)
+  end
+
+  def part_two(f) do
+    content = File.read!(f)
+    map = GridMap.parse(content)
+    graph = map_to_graph(map)
+
+    best = Graph.dijkstra(graph, :s, :e)
+    best = eval_path(best)
+
+    positions = GridMap.find(map, fn v -> v in [".", "S", "E"] end)
+    [s] = GridMap.find(map, &(&1 == "S"))
+
+    positions = Enum.sort_by(positions, &V.dist(&1, s))
+
+    resting_spots = MapSet.new()
+
+    resting_spots =
+      Enum.reduce(positions, resting_spots, fn pos, spots ->
+        IO.puts("Evaluating pos #{inspect(pos)}")
+
+        if MapSet.member?(spots, pos) do
+          IO.puts("Already a member")
+          spots
+        else
+          IO.puts("Not a member - calculating")
+          best_paths = best_paths_at_pos(graph, best, pos)
+
+          unique_positions =
+            best_paths
+            |> Enum.flat_map(& &1)
+            |> Enum.reject(&(&1 == :s or &1 == :e))
+            |> Enum.map(fn {pos, _dir} -> pos end)
+            |> Enum.into(MapSet.new())
+
+          dbg(spots)
+
+          IO.puts(
+            "Adding #{MapSet.size(unique_positions)} entries (already have #{MapSet.size(spots)})"
+          )
+
+          MapSet.union(spots, unique_positions)
+        end
+      end)
+
+    MapSet.size(resting_spots)
+  end
+
+  def best_paths_at_pos(graph, best, pos) do
+    dirs = [{1, 0}, {0, 1}, {-1, 0}, {0, -1}]
+
+    best_paths =
+      for dir <- dirs,
+          first_half = Graph.dijkstra(graph, :s, {pos, dir}),
+          second_half = Graph.dijkstra(graph, {pos, dir}, :e),
+          cost = eval_path(first_half) + eval_path(second_half),
+          cost == best,
+          do: first_half ++ second_half
+
+    best_paths
+  end
+
+  def eval_path([:s, x | xs]) do
+    eval_path(x, xs)
+  end
+
+  def eval_path([x | xs]) do
     eval_path(x, xs)
   end
 
@@ -76,6 +148,10 @@ defmodule Day16 do
     cost = traverse_cost + rotate_cost
 
     cost + eval_path({yp, yd}, ys)
+  end
+
+  def eval_path(_, []) do
+    0
   end
 
   def eval_path(_, [:e | _]) do
