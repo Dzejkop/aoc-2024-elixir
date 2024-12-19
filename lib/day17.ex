@@ -7,6 +7,15 @@ defmodule Day17 do
     Enum.join(out, "")
   end
 
+  def part_two(f) do
+    content = File.read!(f)
+    {_ra, rb, rc, program} = parse(content)
+
+    all_as = Stream.iterate(0, fn x -> x + 1 end)
+
+    Enum.find(all_as, fn a -> exec_program(program, {a, rb, rc}) == program end)
+  end
+
   def parse(s) do
     [ra, rb, rc, p] = for s <- String.split(s, "\n"), s = String.trim(s), s != "", do: s
 
