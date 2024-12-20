@@ -1,6 +1,13 @@
 defmodule GridMap do
   defstruct size: {0, 0}, map: nil
 
+  def new(w, h, default \\ nil) do
+    items = 0..(w * h) |> Enum.map(fn _ -> default end)
+    map = :array.fix(:array.from_list(items, nil))
+
+    %GridMap{size: {w, h}, map: map}
+  end
+
   def parse(s, parser \\ &Function.identity/1) do
     rows =
       String.split(s, "\n")
