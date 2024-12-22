@@ -10,7 +10,7 @@ defmodule Day19 do
     towels = MapSet.new(towels)
 
     Enum.count(designs, fn design ->
-      possible?(design, towels)
+      not impossible?(design, towels)
     end)
   end
 
@@ -46,6 +46,34 @@ defmodule Day19 do
           false
         end
       end)
+    end
+  end
+
+  def impossible?(design, towels) do
+    nmax = Enum.map(towels, &String.length/1) |> Enum.max()
+    towels = MapSet.new(towels)
+
+    impossible?(design, towels, nmax)
+  end
+
+  def impossible?("", _, _) do
+    false
+  end
+
+
+  def impossible?(design, towels, nmax) do
+    if MapSet.member?(towels, design) do
+      false
+    else
+      Enum.all?(nmax..1//-1, fn prefix_len -> 
+        {prefix, rem} = String.split_at(design, prefix_len)
+
+        if MapSet.member?(towels, prefix) do
+          impossible?(rem, towels, nmax)
+        else
+          true
+        end
+      end) 
     end
   end
 end
