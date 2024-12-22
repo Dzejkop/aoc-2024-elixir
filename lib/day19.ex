@@ -10,7 +10,16 @@ defmodule Day19 do
     towels = MapSet.new(towels)
 
     Enum.count(designs, fn design ->
-      not impossible?(design, towels)
+      p = Task.async(fn -> possible?(design, towels) end)
+      i = Task.async(fn -> not impossible?(design, towels) end)
+
+      out = Task.yield_many([p, i], timeout: :infinity)
+      dbg(out)
+      [{_winner, {:ok, result}} | rest] = out
+
+      Enum.each(rest, fn {task, _} -> Task.shutdown(task, :brutal_kill) end)
+
+      result
     end)
   end
 
@@ -37,15 +46,18 @@ defmodule Day19 do
     if MapSet.member?(towels, design) do
       true
     else
-      Enum.any?(nmax..1//-1, fn prefix_len ->
-        {prefix, rem} = String.split_at(design, prefix_len)
+      not Enum.all?(nmax..1//-1, fn prefix_len -> 
 
-        if MapSet.member?(towels, prefix) do
-          possible?(rem, towels, nmax)
-        else
-          false
-        end
       end)
+      # Enum.any?(nmax..1//-1, fn prefix_len ->
+      #   {prefix, rem} = String.split_at(design, prefix_len)
+
+      #   if MapSet.member?(towels, prefix) do
+      #     possible?(rem, towels, nmax)
+      #   else
+      #     false
+      #   end
+      # end)
     end
   end
 
