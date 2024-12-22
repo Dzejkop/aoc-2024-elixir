@@ -36,15 +36,5 @@ defmodule Day19Test do
     assert Day19.possible?("bwurrg", towels)
     assert Day19.possible?("brgr", towels)
     assert not Day19.possible?("bbrgwb", towels)
-    # assert not Day19.possible?("ubwrrrwwuuuburubwgugbwwwuurwwuuwwurwruggugwwrwwburrw", towels)
-
-    assert not Day19.impossible?("brwrr", towels)
-    assert not Day19.impossible?("bggr", towels)
-    assert not Day19.impossible?("gbbr", towels)
-    assert not Day19.impossible?("rrbgbr", towels)
-    assert Day19.impossible?("ubwu", towels)
-    assert not Day19.impossible?("bwurrg", towels)
-    assert not Day19.impossible?("brgr", towels)
-    assert Day19.impossible?("bbrgwb", towels)
   end
 end
