@@ -22,4 +22,8 @@ defmodule V do
   def dist(a, b) do
     V.length(V.sub(a, b))
   end
+
+  def vabs({x, y}) do
+    {abs(x), abs(y)}
+  end
 end
